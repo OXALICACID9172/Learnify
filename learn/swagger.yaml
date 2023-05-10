@@ -1,0 +1,1171 @@
+openapi: 3.0.3
+info:
+  title: Swagger for Learnify
+  description: |-
+    This is a Server based on the OpenAPI 3.0 specification for our Online Learning platform Website- named Learnify. It has 8 schemas, named Category, User, Question, Answer, Review, Video, Course.
+    For the User, we need API's to Create a new user(account)(POST), login into server(GET),logout, Update information about user (PUT), Delete an account.
+    For the Question Entity, We need API's for posting a question, update an exixsting question, get questions from Database, delete a Question.
+    For Answer entity, we should have API's for posting an answer, update an exisiting answer, if made by same person, get all answers to a question, delete an answer.
+    For Review entity, as similar to answer entity, API's are needed, but here these are accesed based on courseID.
+    For Video entity, so as to enable an instructor post an video in specified course by course ID, we need POST API, and to get results based on course, we need GET, and one more is to delete a video.
+    For course entity, we will have to make API's to update an existing course, add a new course, get courses based on Category, userID with which it is posted,course ID, and to delete a course, upload a cover image for course.
+    
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: course
+    description: Everything about Courses
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: video
+    description: API's for Videos.
+  - name: review
+    description: API's for Reviews.
+  - name: Question
+    description: API's for Questions.
+  - name: user
+    description: Operations about user.
+paths:
+  /course:
+    put:
+      tags:
+        - course
+      summary: Update an existing course
+      description: Update an existing course by Id
+      operationId: updateCourse
+      requestBody:
+        description: Update an existent course.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+    post:
+      tags:
+        - course
+      summary: Add a new course
+      description: Add a new course by the Id.
+      operationId: addCourse
+      requestBody:
+        description: Create a new course.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /course/findByCategory:
+    get:
+      tags:
+        - course
+      summary: Finds Courses by category
+      description: Multiple category values can be provided with comma separated strings
+      operationId: findCoursesByStatus
+      parameters:
+        - name: category
+          in: query
+          description: Status values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid status value
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /course/findByuserid:
+    get:
+      tags:
+        - course
+      summary: Finds Courses by userid
+      description: ''
+      operationId: findCoursesByuserid
+      parameters:
+        - name: userid
+          in: query
+          description: ''
+          required: false
+          explode: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid tag value
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /course/{courseId}:
+    get:
+      tags:
+        - course
+      summary: Find course by ID
+      description: Returns a single course
+      operationId: getCourseById
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of course to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+      security:
+        - api_key: []
+        - petstore_auth:
+            - write:courses
+            - read:courses
+    post:
+      tags:
+        - course
+      summary: Updates a course with form data
+      description: ''
+      operationId: updateCourseWithForm
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of course that needs to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: name
+          in: query
+          description: Name of course that needs to be updated
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Status of course that needs to be updated
+          schema:
+            type: string
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+    delete:
+      tags:
+        - course
+      summary: Deletes a course
+      description: delete a course
+      operationId: deleteCourse
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: courseId
+          in: path
+          description: Course id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid course value
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /course/{courseId}/uploadImage:
+    post:
+      tags:
+        - course
+      summary: uploads an image as the cover page of course
+      description: ''
+      operationId: uploadFile
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of course to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: additionalMetadata
+          in: query
+          description: Additional Metadata
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /video:
+    post:
+      tags:
+        - video
+      summary: Upload video
+      description: ''
+      operationId: postVideo
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Video'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Video'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Video'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Video'
+  /video/findBycourseId:
+    get:
+      tags:
+        - video
+      summary: returns the video list based on courseId
+      description: ''
+      operationId: getVideo
+      parameters:
+        - name: courseid
+          in: query
+          description: Tags to filter by
+          required: false
+          explode: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Video'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Video'
+        '400':
+          description: Invalid tag value
+      security:
+        - petstore_auth:
+            - write:videos
+            - read:videos
+  /video/{id}:
+    delete:
+      tags:
+        - video
+      summary: Deletes the video bt videoId
+      description: ''
+      operationId: deleteVideo
+      parameters:
+        - name: id
+          in: path
+          description: The id of video that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+  /review:
+    post:
+      tags:
+        - review
+      summary: posts a new review
+      description: ''
+      operationId: postReview
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Review'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Review'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Review'
+    put:
+      tags:
+        - review
+      summary: Update an existing review
+      description: Update an existing review by Id
+      operationId: updateReview
+      requestBody:
+        description: Update an existent review in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Review'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Review'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /review/findbycourseid:
+    get:
+      tags:
+        - review
+      summary: returns reviews with given courseId
+      description: ''
+      operationId: getReview
+      parameters:
+        - name: courseid
+          in: query
+          description: courseId
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid courseId
+  /review/{id}:
+    delete:
+      tags:
+        - review
+      summary: Deletes a review
+      description: delete a review
+      operationId: deleteReview
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: Course id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid course value
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /Question:
+    post:
+      tags:
+        - Question
+      summary: posts a new Question
+      description: ''
+      operationId: postQuestion
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Question'
+    put:
+      tags:
+        - Question
+      summary: Update an existing Question comment
+      description: Update an existing Question comment by Id
+      operationId: updateQuestion
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Question'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /Question/{videoid}:
+    get:
+      tags:
+        - Question
+      summary: returns Questions with given videoId
+      description: ''
+      operationId: getReviews
+      parameters:
+        - name: videoid
+          in: path
+          description: videoId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid vdieoId
+  /Question/{id}:
+    delete:
+      tags:
+        - Question
+      summary: Deletes a Question comment
+      description: delete a Question comment
+      operationId: deleteQuestion
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: Question id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid Question id
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /Answer:
+    post:
+      tags:
+        - Answer
+      summary: posts a new Answer
+      description: ''
+      operationId: postAnswer
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Answer'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Answer'
+    put:
+      tags:
+        - Answer
+      summary: Update an existing Answer comment
+      description: Update an existing Answer comment by Id
+      operationId: updateAnswer
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Answer'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Answer'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /Answer/quesId:
+    get:
+      tags:
+        - Answer
+      summary: returns Answers with given quesId
+      description: ''
+      operationId: getanswer
+      parameters:
+        - name: quesid
+          in: query
+          description: QuesId
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid vdieoId
+  /Answer/{id}:
+    delete:
+      tags:
+        - Answer
+      summary: Deletes a Answer comment
+      description: delete a Answer comment
+      operationId: deleteAnswer
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: Answer id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid Answer id
+      security:
+        - petstore_auth:
+            - write:courses
+            - read:courses
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/createWithList:
+    post:
+      tags:
+        - user
+      summary: Creates list of users with given input array
+      description: Creates list of users with given input array
+      operationId: createUsersWithListInput
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: successful operation
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      description: ''
+      operationId: logoutUser
+      parameters: []
+      responses:
+        default:
+          description: successful operation
+  /user/{username}:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      description: ''
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: 'The name that needs to be fetched. Use user1 for testing. '
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be deleted
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Dogs
+      xml:
+        name: category
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+        phone:
+          type: string
+          example: '12345'
+        userStatus:
+          type: integer
+          description: User Status
+          format: int32
+          example: 1
+        isInstructor:
+          type: boolean
+          description: Boolean that indicates whether a user is enrolled as Instructor
+          example: true
+      xml:
+        name: user
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        comment:
+          type: string
+        userid:
+          type: integer
+          format: int64
+        videoid:
+          type: integer
+          format: int64
+    Answer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        comment:
+          type: string
+        userid:
+          type: integer
+          format: int64
+        quesid:
+          type: integer
+          format: int64
+    Review:
+      required:
+        - rating
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userid:
+          type: integer
+          format: int64
+        review:
+          type: string
+          example: excellent
+        rating:
+          type: integer
+          format: int64
+          example: 3
+        courseid:
+          type: integer
+          format: int64
+    Video:
+      required:
+        - thumbnail
+        - videoUrl
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        thumbnail:
+          type: string
+        videoUrl:
+          type: string
+        description:
+          type: string
+        courseid:
+          type: integer
+          format: int64
+        review:
+          $ref: '#/components/schemas/Review'
+    Course:
+      required:
+        - name
+        - video
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: doggie
+        pdfs:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+            example: hello.pdf
+        category:
+          $ref: '#/components/schemas/Category'
+      xml:
+        name: course
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+  requestBodies:
+    Course:
+      description: Course object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Course'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Course'
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:courses: modify courses in your account
+            read:courses: read your courses
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
