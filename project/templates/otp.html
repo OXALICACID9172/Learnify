@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" style="overflow-y: scroll;overflow-x: hidden;height:100%;">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+            function OTPInput() {
+                const inputs = document.querySelectorAll('#otp > *[id]');
+                for (let i = 0; i < inputs.length; i++) {
+                    inputs[i].addEventListener('keydown', function (event) {
+                        if
+                            (event.key === "Backspace") { inputs[i].value = ''; if (i !== 0) inputs[i - 1].focus(); } else {
+                                if
+                                    (i === inputs.length - 1 && inputs[i].value !== '') { return true; } else if (event.keyCode > 47 &&
+                                        event.keyCode < 58) {
+                                            inputs[i].value = event.key; if (i !== inputs.length - 1) inputs[i + 1].focus();
+                                    event.preventDefault();
+                                } else if (event.keyCode > 64 && event.keyCode < 91) {
+                                    inputs[i].value = String.fromCharCode(event.keyCode); if (i !== inputs.length - 1) inputs[i +
+                                        1].focus(); event.preventDefault();
+                                }
+                        }
+                    });
+                }
+            } OTPInput();
+        }); 
+    </script>
+    <style>
+        .height-100 {
+            height: 50vh;
+        }
+
+        .card {
+            width: 400px;
+            border: none;
+            height: 300px;
+            box-shadow: 0px 5px 20px 0px #d2dae3;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center
+        }
+
+        .card h6 {
+            color:rgb(48, 48, 252);
+            font-size: 20px
+        }
+
+        .inputs input {
+            width: 40px;
+            height: 40px
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0
+        }
+
+        .card-2 {
+            background-color: #fff;
+            padding: 10px;
+            width: 350px;
+            height: 100px;
+            bottom: -50px;
+            left: 20px;
+            position: absolute;
+            border-radius: 5px
+        }
+
+        .card-2 .content {
+            margin-top: 50px
+        }
+
+        .card-2 .content a {
+            color: rgb(48, 48, 252)
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border: 2px solid rgb(48, 48, 252)
+        }
+
+        .validate {
+            border-radius: 20px;
+            height: 40px;
+            background-color:rgb(4, 132, 4);
+            border: 1px solid;
+            width: 140px
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar" style="background-color:#191645;">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex " href="/">
+                <img src="{{url_for('static',filename='symbol.png')}}" class="img-fluid mx-2" alt="..."
+                    style="width:25%;height:35%;">
+                <h1 style="color :aliceblue;font-size: 150%;">LEARNIFY</h1>
+            </a>
+            <form class="d-flex" role="search" action="/search" method="POST">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+            <div class="mx-2">
+                <a class="btn btn-light mx-2"
+                    style="background-color:#43C6AC;border-style: none;border-radius: 17.5px;width:92px;" href="/login"
+                    role="button">Login</a>
+                <a class="btn btn-outline-light mx-2" id="signupbutton"
+                    style="border-radius: 17.5px;width:92px;color: #43C6AC;height:35px;border-color: #43C6AC;text-align: center;"
+                    href="/signup" role="button">Signup</a>
+            </div>
+        </div>
+    </nav>
+    <div class="column text-center">
+        <main class="w-50 form-signin m-auto">
+            <h1 class="h3 mb-3 fw-normal" style="margin-top: 50px;">Enter OTP to change password</h1>
+            <form action="/OTP" method="POST">
+                {% with messages=get_flashed_messages() %}
+                {% if messages %}
+                    <div class=" alert alert-danger" role="alert">
+                        {{ messages[0] }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>OTP sent!</strong> An OTP has been sent to email.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+                {% endwith %}
+                <div class="container height-100 d-flex justify-content-center align-items-center">
+                    <div class="position-relative">
+                        <div class="card p-2 text-center">
+                            <h6>Please enter the one time password <br> to verify your account</h6>
+                            <div> <span>An otp has been sent to</span> <small>email</small> </div>
+                            <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2"> <input
+                                    class="m-2 text-center form-control rounded" type="text" id="first" maxlength="1" name = "o1" required/>
+                                <input class="m-2 text-center form-control rounded" type="text" id="second"
+                                    maxlength="1" name = "o2" required/> <input class="m-2 text-center form-control rounded" type="text"
+                                    id="third" maxlength="1" name = "o3" required/> <input class="m-2 text-center form-control rounded"
+                                    type="text" id="fourth" maxlength="1" name = "o4" required/>
+                                <input type="hidden" name="username" value="{{username}}">
+                            </div>
+                            <div class="mt-4"> <button type = "submit" class="btn btn-danger px-4 validate">Validate</button> </div>
+                        </div>
+                        <div class="card-2">
+                            <div class="content d-flex justify-content-center align-items-center"> <span>Didn't get the
+                                    code</span> <a href="#" class="text-decoration-none ms-3">Resend</a> </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+    <footer style="background-color:#191645;height:300px;margin-top: 50px;">
+        <div class="container-fluid">
+            <ul class="nav justify-content-center">
+                <li class="nav-item"><a href="#" class="nav-link px-5 text-body-secondary">
+                        <p style="color: aliceblue;">Privacy Policy</p>
+                    </a></li>
+                <li class="nav-item"><a href="#" class="nav-link px-4 text-body-secondary">
+                        <p style="color: aliceblue;">About US</p>
+                    </a></li>
+                <li class="nav-item"><a href="#" class="nav-link px-5 text-body-secondary">
+                        <p style="color: aliceblue;">Contact</p>
+                    </a></li>
+            </ul>
+        </div>
+        <div class="container-fluid d-flex row" style="margin-top: 100px;">
+            <a class="cols-6 col-md-4 col-3 d-flex mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+                href="/" style="align-items: start;">
+                <img src="{{url_for('static',filename='symbol.png')}}" class="img-fluid mx-2" alt="..."
+                    style="width:15%;">
+                <h1 style="color :aliceblue;font-size: 180%;">LEARNIFY</h1>
+            </a>
+            <p class="col-md-4 col-6 mb-0 text-body-secondary"></p>
+            <p class="cols-6 col-md-4 col-3 " style="color:aliceblue;text-align: right;">© 2023 Company, Inc</p>
+        </div>
+    </footer>
+</body>
+
+</html>
